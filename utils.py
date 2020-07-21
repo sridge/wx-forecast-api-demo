@@ -6,8 +6,8 @@ def plot_forecast(x,json_output,quantity,units,color):
     
     h = bokeh.models.tools.HoverTool(
         tooltips=[
-            ('temperature', '$y{0.1f}°C'),
-            ( 'date',   '@x{%I %p %F}'            ),
+            (quantity, '$y{0.1f}'+f'{units}'),
+            ('Time (UTC)','@x{%I %p %F}'),
         ],
 
         formatters={
@@ -19,11 +19,12 @@ def plot_forecast(x,json_output,quantity,units,color):
         mode='vline'
     )
     
-    s = bokeh.models.tools.PanTool()
+    p = bokeh.models.tools.PanTool()
+    s = bokeh.models.tools.SaveTool()
 
     fig = figure(x_axis_type='datetime', title=f'{quantity} ({units})', x_range=(x[1], x[120]),
-                 tools = [h,s],
-                 height=300,width=600, toolbar_location="below",background_fill_alpha=0)
+                 tools = [h,p,s],
+                 height=300,width=600, toolbar_location="below",)
 
 
     fig.varea(x=x[1:],
@@ -39,6 +40,6 @@ def plot_forecast(x,json_output,quantity,units,color):
     fig.xgrid.grid_line_color = None
     fig.ygrid.grid_line_width = 0.5
 
-
+    output_file(f'{quantity.lower()}.html')
 
     show(fig)
